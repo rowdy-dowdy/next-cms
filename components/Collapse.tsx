@@ -45,7 +45,7 @@ const Collapse = ({className = "", children, show = false, setShow}: any) => {
     <div 
       ref={ref}
       style={{height: !firstShow ? "0px" : ""}}
-      className={`overflow-hidden transition-all z-50 ${className}`}
+      className={`overflow-hidden transition-all ${className}`}
     >
       {children}
     </div>

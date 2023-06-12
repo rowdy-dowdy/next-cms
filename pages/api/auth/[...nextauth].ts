@@ -77,7 +77,7 @@ export const authOptions: AuthOptions = {
   //   signIn: '/',
   // },
   // debug: process.env.NODE_ENV === 'development',
-  secret: process.env.JWT_KEY,
+  // secret: process.env.JWT_KEY,
 }
 
 export default NextAuth(authOptions);
