@@ -11,7 +11,7 @@ type ComponentType = {
   onDelete: () => void
 }
 
-const AdminAddFieldText: React.FC<ComponentType> = ({
+const AdminAddFieldJson: React.FC<ComponentType> = ({
   onDelete
 }) => {
   const [name, setName] = useState('field')
@@ -39,7 +39,7 @@ const AdminAddFieldText: React.FC<ComponentType> = ({
       <div className="flex w-full relative">
         <div className="flex-grow min-w-0 m-1.5 p-1 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
           <span className="flex-none icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 8h2V6h3.252L7.68 18H5v2h8v-2h-2.252L13.32 6H17v2h2V4H5z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 22h1v-2h-.989C8.703 19.994 6 19.827 6 16c0-1.993-.665-3.246-1.502-4C5.335 11.246 6 9.993 6 8c0-3.827 2.703-3.994 3-4h1V2H8.998C7.269 2.004 4 3.264 4 8c0 2.8-1.678 2.99-2.014 3L2 13c.082 0 2 .034 2 3 0 4.736 3.269 5.996 5 6zm13-11c-.082 0-2-.034-2-3 0-4.736-3.269-5.996-5-6h-1v2h.989c.308.006 3.011.173 3.011 4 0 1.993.665 3.246 1.502 4-.837.754-1.502 2.007-1.502 4 0 3.827-2.703 3.994-3 4h-1v2h1.002C16.731 21.996 20 20.736 20 16c0-2.8 1.678-2.99 2.014-3L22 11z"></path></svg>
           </span>
           <input ref={inputRef} type="text" className="flex-grow min-w-0" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
@@ -66,4 +66,4 @@ const AdminAddFieldText: React.FC<ComponentType> = ({
   )
 }
 
-export default AdminAddFieldText
+export default AdminAddFieldJson

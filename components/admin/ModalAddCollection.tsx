@@ -4,6 +4,17 @@ import { grey } from '@mui/material/colors'
 import React, { useEffect, useState } from 'react'
 import AdminFormFieldText from './form-field/AdminFormFieldText'
 import AdminAddFieldText from './add-form-filed/AdminAddFieldText'
+import { v4 } from 'uuid'
+import AdminAddFieldRichText from './add-form-filed/AdminAddFieldRichText'
+import AdminAddFieldNumber from './add-form-filed/AdminAddFieldNumber'
+import AdminAddFieldBool from './add-form-filed/AdminAddFieldBool'
+import AdminAddFieldEmail from './add-form-filed/AdminAddFieldEmail'
+import AdminAddFieldUrl from './add-form-filed/AdminAddFieldUrl'
+import AdminAddFieldDateTime from './add-form-filed/AdminAddFieldDateTime'
+import AdminAddFieldSelect from './add-form-filed/AdminAddFieldSelect'
+import AdminAddFieldFile from './add-form-filed/AdminAddFieldFile'
+import AdminAddFieldRelation from './add-form-filed/AdminAddFieldRelation'
+import AdminAddFieldJson from './add-form-filed/AdminAddFieldJson'
 
 type ComponentType = {
   open: boolean,
@@ -11,6 +22,10 @@ type ComponentType = {
 }
 
 const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
+  const onCloseModal = () => {
+    onClose()
+    // setData([])
+  }
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openFileds = Boolean(anchorEl)
@@ -42,7 +57,7 @@ const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
       icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16.018 3.815 15.232 8h-4.966l.716-3.815-1.964-.37L8.232 8H4v2h3.857l-.751 4H3v2h3.731l-.714 3.805 1.965.369L8.766 16h4.966l-.714 3.805 1.965.369.783-4.174H20v-2h-3.859l.751-4H21V8h-3.733l.716-3.815-1.965-.37zM14.106 14H9.141l.751-4h4.966l-.752 4z"></path></svg>',
     },
     {
-      name: "Check",
+      name: "Bool",
       icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16 9c-1.628 0-3 1.372-3 3s1.372 3 3 3 3-1.372 3-3-1.372-3-3-3z"></path><path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8c3.309 0 6-2.691 6-6s-2.691-6-6-6zm0 10H8a4.006 4.006 0 0 1-4-3.99C4.004 9.799 5.798 8 8 8h8c2.206 0 4 1.794 4 4s-1.794 4-4 4z"></path></svg>',
     },
     {
@@ -75,22 +90,27 @@ const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
     },
   ]
 
-  const [data, setData] = useState<{field: string, name: string}[]>([])
+  const [data, setData] = useState<{id: string, field: string, name: string, }[]>([])
 
   const addField = (fieldName: string) => {
     setData(state => [...state, {
+      id: v4(),
       field: fieldName,
       name: fieldName
     }])
+    handleClose()
+  }
 
-    console.log(data)
+  const onDeleteField = (id: string) => {
+    console.log('delete',id)
+    setData(state => state.filter(v => v.id != id))
   }
 
   return (
     <Drawer
       anchor='right'
       open={open}
-      onClose={onClose}
+      onClose={onCloseModal}
     >
       <div className='w-[700px] max-w-[100vw] flex flex-col h-full'>
         <div className="flex-none bg-gray-100 py-6 px-8">
@@ -104,10 +124,30 @@ const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
             <Chip label="updatedAt" size='small'/>.
           </div>
 
-          {data.map((v,i) => {
+          {data.map(v => {
             switch(v.field) {
               case 'Plain text':
-                return <AdminAddFieldText key={i} />
+                return <AdminAddFieldText key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'Rich text':
+                return <AdminAddFieldRichText key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'Number':
+                return <AdminAddFieldNumber key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'Bool':
+                return <AdminAddFieldBool key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'Email':
+                return <AdminAddFieldEmail key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'Url':
+                return <AdminAddFieldUrl key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'Datetime':
+                return <AdminAddFieldDateTime key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'Select':
+                return <AdminAddFieldSelect key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'File':
+                return <AdminAddFieldFile key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'Relation':
+                return <AdminAddFieldRelation key={v.id} onDelete={() => onDeleteField(v.id)} />
+              case 'JSON':
+                return <AdminAddFieldJson key={v.id} onDelete={() => onDeleteField(v.id)} />
               default:
                 return null;
             }

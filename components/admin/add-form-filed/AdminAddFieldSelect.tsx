@@ -11,7 +11,7 @@ type ComponentType = {
   onDelete: () => void
 }
 
-const AdminAddFieldText: React.FC<ComponentType> = ({
+const AdminAddFieldSelect: React.FC<ComponentType> = ({
   onDelete
 }) => {
   const [name, setName] = useState('field')
@@ -39,7 +39,7 @@ const AdminAddFieldText: React.FC<ComponentType> = ({
       <div className="flex w-full relative">
         <div className="flex-grow min-w-0 m-1.5 p-1 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
           <span className="flex-none icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 8h2V6h3.252L7.68 18H5v2h8v-2h-2.252L13.32 6H17v2h2V4H5z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm16-8V6H8.023v2H18.8zM8 11h12v2H8zm0 5h12v2H8z"></path></svg>
           </span>
           <input ref={inputRef} type="text" className="flex-grow min-w-0" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
@@ -66,4 +66,4 @@ const AdminAddFieldText: React.FC<ComponentType> = ({
   )
 }
 
-export default AdminAddFieldText
+export default AdminAddFieldSelect

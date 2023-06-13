@@ -15,7 +15,7 @@ const HomeSideBar = () => {
   return (
     <div className='w-60 h-full bg-white border-r'>
       <div className="px-4 py-6 border-b">
-        <input type="text" className='px-2 py-1 hover:!bg-gray-300 focus:!bg-gray-300 rounded' placeholder='Search collection'/>
+        <input type="text" className='px-2 py-1 hover:!bg-gray-300 focus:!bg-gray-200 rounded' placeholder='Search collection'/>
       </div>
       <div className="flex flex-col space-y-1 px-4 py-4">
         <div className="flex items-center space-x-2 rounded hover:bg-gray-200 p-2 cursor-pointer">
@@ -31,6 +31,10 @@ const HomeSideBar = () => {
           </span>
           <span>messages</span>
         </div>
+
+        {/* <div className='py-4 text-center'>
+          No collections found.
+        </div> */}
 
         <Button className='!mt-4' variant="outlined" style={{borderWidth: 2, borderColor: grey[900]}} startIcon={(
           <span className="icon">
