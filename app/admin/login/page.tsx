@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import AdminContentLoginForm from '@/components/admin/content/AdminContentLoginForm'
+import AdminLoginForm from '@/components/admin/content/AdminLoginForm'
 import { useCurrentUserAdmin } from '@/lib/server/helperServer'
 import { redirect } from 'next/navigation'
 
@@ -28,7 +28,7 @@ const page = async () => {
                 <h5 className="mt-4 text-4xl font-semibold text-gray-800">Welcome Back</h5>
                 <p className="mt-4">Please enter your account details</p>
 
-                <AdminContentLoginForm />
+                <AdminLoginForm />
               </div>
             </div>
           </div>

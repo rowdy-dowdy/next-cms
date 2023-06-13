@@ -5,6 +5,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material'
 import React from "react";
 import { Roboto } from 'next/font/google'
 import { SnackbarProvider } from 'notistack';
+import { grey } from "@mui/material/colors";
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -15,6 +16,9 @@ const roboto = Roboto({
 export const lightTheme = createTheme({
   palette: {
     mode: "light",
+    primary: {
+      main: grey[900]
+    },
   },
   typography: {
     fontFamily: roboto.style.fontFamily
@@ -26,7 +30,7 @@ const MuiProvider: React.FC<{
 }> = ({children}) => {
   return (
     <ThemeProvider theme={lightTheme}>
-      <style>
+      <style global jsx>
         {`html {
           font-family: ${roboto.style.fontFamily};
         }`}

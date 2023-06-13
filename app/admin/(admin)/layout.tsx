@@ -37,12 +37,14 @@ export default async function AdminRootLayout({
 
   const user = await useCurrentUserAdmin()
 
+  console.log({user})
+
   if (!user) {
     redirect('/admin/login')
   }
 
   return (
-    <div className="w-full h-screen flex bg-gray-100 overflow-y-auto">
+    <div className="w-full h-screen flex bg-gray-100">
       <div className="flex-none h-full">
         <AdminSideBar user={user} />
       </div>

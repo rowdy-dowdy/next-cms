@@ -57,8 +57,6 @@ const AdminSideBar: React.FC<{
             <img src={user.image || ""} alt="logo" className="w-full h-full object-contain" />
           </div>
           <Menu
-            id="demo-positioned-menu"
-            aria-labelledby="demo-positioned-button"
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
@@ -72,12 +70,12 @@ const AdminSideBar: React.FC<{
             }}
           >
             <MenuItem><Link href="/admin">Bảng điều khiển</Link></MenuItem>
-            <MenuItem><Link href="/admin">Nhật ký</Link></MenuItem>
-            <MenuItem><Link href="/admin">Cài đặt</Link></MenuItem>
+            <MenuItem><Link href="/admin/logs">Nhật ký</Link></MenuItem>
+            <MenuItem><Link href="/admin/settings">Cài đặt</Link></MenuItem>
             <Divider sx={{ my: 0.5 }} />
             <MenuItem onClick={handleClose} className='space-x-2 !text-red-600'>
               <span className="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16 13v-2H7V8l-5 4 5 4v-3z"></path><path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m2 12 5 4v-3h9v-2H7V8z"></path><path d="M13.001 2.999a8.938 8.938 0 0 0-6.364 2.637L8.051 7.05c1.322-1.322 3.08-2.051 4.95-2.051s3.628.729 4.95 2.051 2.051 3.08 2.051 4.95-.729 3.628-2.051 4.95-3.08 2.051-4.95 2.051-3.628-.729-4.95-2.051l-1.414 1.414c1.699 1.7 3.959 2.637 6.364 2.637s4.665-.937 6.364-2.637c1.7-1.699 2.637-3.959 2.637-6.364s-.937-4.665-2.637-6.364a8.938 8.938 0 0 0-6.364-2.637z"></path></svg>
               </span>
               <span className="">Đăng xuất</span>
             </MenuItem>
