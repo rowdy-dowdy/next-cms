@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   try {
-    const dataTypes = await db.dataType.
+    const dataTypes = await db.dataType.findMany()
 
-    return NextResponse.json({ data: dataType });
+    return NextResponse.json({ data: dataTypes });
   }
   catch (e) {
     console.log(e)

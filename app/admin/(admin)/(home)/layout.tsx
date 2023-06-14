@@ -1,21 +1,21 @@
 import HomeSideBar from "@/components/admin/HomeSideBar";
-import AdminHomeContent from "@/components/admin/content/AdminHomeContent";
-
 
 async function getData() {
-  await new Promise((res) => setTimeout(() => {
-    res(1)
-  }, 5000))
-
-  const res = await fetch('/api/admin/database/data-types')
+  const res = await fetch(process.env.NEXTAUTH_URL + '/api/admin/database/data-types')
   if (!res.ok) {
-    return {user: null}
+    null
   }
 
-  return res.json();
+  console.log('asdf')
+
+  return await res.json();
 }
 
-export default async function Page() {
+export default async function HomeLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
 
   const data = await getData()
 
@@ -27,7 +27,7 @@ export default async function Page() {
         <HomeSideBar />
       </div>
       <div className="flex-grow min-w-0">
-        <AdminHomeContent data={[]} />
+        {children}
       </div>
     </div>
   );

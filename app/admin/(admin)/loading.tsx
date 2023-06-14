@@ -3,7 +3,7 @@ import React from 'react'
 const loading = () => {
   return (
     <div className='w-full h-full grid place-items-center'>
-      <style global jsx>
+      <style>
       {`.icon-custom-loading {
         stroke: currentColor;
         stroke-dasharray: 80px,200px;

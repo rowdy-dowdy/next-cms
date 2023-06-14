@@ -21,14 +21,14 @@ const SelectSingleMultiple = () => {
 
   return (
     <div className="w-24 h-full p-1.5">
-      <button className={`w-full h-full p-1.5 flex items-center space-x-2 ${openFileds ? 'bg-gray-300' : ''} rounded`}
+      <div className={`w-full h-full p-1.5 flex items-center space-x-2 ${openFileds ? 'bg-gray-300' : ''} rounded`}
         onClick={handleClick}
       >
         <div className='bg-transparent flex-grow min-w-0 h-full text-sm capitalize'>{value}</div>
         <span className={`icon flex-none w-2 h-2 transition-all ${openFileds ? 'rotate-180' : ''}`}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
         </span>
-      </button>
+      </div>
       <Menu
         // MenuListProps={{
         //   // "aria-labelledby": "basic-button",

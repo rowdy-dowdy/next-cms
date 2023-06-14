@@ -1,5 +1,4 @@
 "use client"
-
 import React, { useState } from 'react'
 import ModalAddCollection from './ModalAddCollection'
 import Button from '@mui/material/Button';

@@ -30,7 +30,7 @@ const MuiProvider: React.FC<{
 }> = ({children}) => {
   return (
     <ThemeProvider theme={lightTheme}>
-      <style global jsx>
+      <style global={true} jsx={true}>
         {`html {
           font-family: ${font.style.fontFamily};
         }`}
