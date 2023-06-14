@@ -87,3 +87,26 @@ model Image {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model DataType {
+  id   String @id @default(uuid())
+  name String
+
+  dataRows DataRow[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DataRow {
+  id      String  @id @default(uuid())
+  name    String
+  field   String
+  details String?
+
+  dataTypeId String
+  dataType   DataType @relation(fields: [dataTypeId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

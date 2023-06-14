@@ -1,21 +1,24 @@
 "use client"
 import FormIOSSwitch from '@/components/FormIOSSwitch';
 import IconCog from '@/components/icons/IconCog'
-import { Button, Collapse } from '@mui/material';
+import { Button, Collapse, Menu, MenuItem } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import React, { useEffect, useRef, useState } from 'react'
+import SelectSingleMultiple from './SelectSingleMultiple';
 
 type ComponentType = {
-  onDelete: () => void
+  onDelete: () => void,
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  defaultValue?: string
 }
 
 const AdminAddFieldSelect: React.FC<ComponentType> = ({
-  onDelete
+  onDelete,
+  onChange,
+  defaultValue
 }) => {
-  const [name, setName] = useState('field')
-
   const [expanded, setExpanded] = useState<boolean>(false)
 
   const handleChange = () => {
@@ -36,18 +39,30 @@ const AdminAddFieldSelect: React.FC<ComponentType> = ({
 
   return (
     <div className='rounded bg-gray-200 w-full group'>
-      <div className="flex w-full relative">
-        <div className="flex-grow min-w-0 m-1.5 p-1 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
+      <div className="flex w-full relative items-center text-sm">
+        <div className="flex-grow min-w-0 m-1.5 p-1.5 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
           <span className="flex-none icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm16-8V6H8.023v2H18.8zM8 11h12v2H8zm0 5h12v2H8z"></path></svg>
           </span>
-          <input ref={inputRef} type="text" className="flex-grow min-w-0" value={name} onChange={(e) => setName(e.target.value)} />
+          <input ref={inputRef} type="text" className="flex-grow min-w-0" required defaultValue={defaultValue || 'field'} onChange={(e) => onChange(e)} />
         </div>
+
+        <div className="flex-grow min-w-0 border-l">
+          <div className="m-1.5 py-1.5 px-2 focus-within:bg-gray-300 rounded">
+            <input type="text" className="flex-grow min-w-0" placeholder='Choices: eg. optionA, optionB'/>
+          </div>
+        </div>
+
+        <div className="flex-none border-l">
+          <SelectSingleMultiple />
+        </div>
+
         <div className="flex-none p-2 border-l">
           <span className="icon w-8 h-8 p-1 cursor-pointer hover:bg-gray-300 rounded-full"
             onClick={handleChange}
           ><IconCog /></span>
         </div>
+        
         <div className="absolute top-1/2 right-full -translate-y-1/2 cursor-pointer opacity-0 group-hover:opacity-100 transition-all">
           <span className="icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m7 17 5 5 5-5h-4V7h4l-5-5-5 5h4v10z"></path></svg>

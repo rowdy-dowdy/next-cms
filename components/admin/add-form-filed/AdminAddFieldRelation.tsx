@@ -1,21 +1,24 @@
 "use client"
 import FormIOSSwitch from '@/components/FormIOSSwitch';
 import IconCog from '@/components/icons/IconCog'
-import { Button, Collapse } from '@mui/material';
+import { Button, Collapse, Menu, MenuItem } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import React, { useEffect, useRef, useState } from 'react'
+import SelectSingleMultiple from './SelectSingleMultiple';
 
 type ComponentType = {
-  onDelete: () => void
+  onDelete: () => void,
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  defaultValue?: string
 }
 
 const AdminAddFieldRelation: React.FC<ComponentType> = ({
-  onDelete
+  onDelete,
+  onChange,
+  defaultValue
 }) => {
-  const [name, setName] = useState('field')
-
   const [expanded, setExpanded] = useState<boolean>(false)
 
   const handleChange = () => {
@@ -36,13 +39,22 @@ const AdminAddFieldRelation: React.FC<ComponentType> = ({
 
   return (
     <div className='rounded bg-gray-200 w-full group'>
-      <div className="flex w-full relative">
-        <div className="flex-grow min-w-0 m-1.5 p-1 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
+      <div className="flex w-full relative items-center text-sm">
+        <div className="flex-1 min-w-0 m-1.5 p-1.5 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
           <span className="flex-none icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 3C19.6569 3 21 4.34315 21 6C21 7.65685 19.6569 9 18 9H15C13.6941 9 12.5831 8.16562 12.171 7.0009L11 7C9.9 7 9 7.9 9 9L9.0009 9.17102C10.1656 9.58312 11 10.6941 11 12C11 13.3059 10.1656 14.4169 9.0009 14.829L9 15C9 16.1 9.9 17 11 17L12.1707 17.0001C12.5825 15.8349 13.6937 15 15 15H18C19.6569 15 21 16.3431 21 18C21 19.6569 19.6569 21 18 21H15C13.6941 21 12.5831 20.1656 12.171 19.0009L11 19C8.79 19 7 17.21 7 15H5C3.34315 15 2 13.6569 2 12C2 10.3431 3.34315 9 5 9H7C7 6.79086 8.79086 5 11 5L12.1707 5.00009C12.5825 3.83485 13.6937 3 15 3H18ZM18 17H15C14.4477 17 14 17.4477 14 18C14 18.5523 14.4477 19 15 19H18C18.5523 19 19 18.5523 19 18C19 17.4477 18.5523 17 18 17ZM8 11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H8C8.55228 13 9 12.5523 9 12C9 11.4477 8.55228 11 8 11ZM18 5H15C14.4477 5 14 5.44772 14 6C14 6.55228 14.4477 7 15 7H18C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5Z"></path></svg>
           </span>
-          <input ref={inputRef} type="text" className="flex-grow min-w-0" value={name} onChange={(e) => setName(e.target.value)} />
+          <input ref={inputRef} type="text" className="flex-grow min-w-0" required defaultValue={defaultValue || 'field'} onChange={(e) => onChange(e)} />
         </div>
+
+        <div className="flex-1 min-w-0 border-l">
+          <SelectRelation />
+        </div>
+
+        <div className="flex-none border-l">
+          <SelectSingleMultiple />
+        </div>
+
         <div className="flex-none p-2 border-l">
           <span className="icon w-8 h-8 p-1 cursor-pointer hover:bg-gray-300 rounded-full"
             onClick={handleChange}
@@ -62,6 +74,70 @@ const AdminAddFieldRelation: React.FC<ComponentType> = ({
           </div>
         </div>
       </Collapse>
+    </div>
+  )
+}
+
+const SelectRelation = () => {
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const openFileds = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const [widthFileds, setWidthFileds] = useState(0)
+  useEffect(() => {
+    if (anchorEl) {
+      setWidthFileds(anchorEl.offsetWidth)
+    }
+  }, [anchorEl])
+
+  const [value, setValue] = useState('')
+
+  const [data, setData] = useState(['users', 'messages','posts'])
+
+  const clickSelectItem = (value: string) => {
+    setValue(value)
+    setAnchorEl(null)
+  }
+
+  return (
+    <div className="w-full h-full p-1.5">
+      <button className={`w-full h-full p-1.5 flex items-center space-x-2 ${openFileds ? 'bg-gray-300' : ''} rounded text-left`}
+        onClick={handleClick}
+      >
+        <div className='bg-transparent flex-grow min-w-0 h-full text-sm capitalize'>
+          {value != '' ? value : 'Select collection *'}
+        </div>
+        <span className={`icon flex-none w-2 h-2 transition-all ${openFileds ? 'rotate-180' : ''}`}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
+        </span>
+      </button>
+      <Menu
+        MenuListProps={{
+          // "aria-labelledby": "basic-button",
+          sx: { width: widthFileds }
+        }}
+        anchorEl={anchorEl}
+        open={openFileds}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        {data.map((v,i) =>
+          <MenuItem key={i} onClick={() => clickSelectItem(v)}>{v}</MenuItem>
+        )}
+      </Menu>
     </div>
   )
 }

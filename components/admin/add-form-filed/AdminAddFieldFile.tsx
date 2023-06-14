@@ -6,16 +6,19 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import React, { useEffect, useRef, useState } from 'react'
+import SelectSingleMultiple from './SelectSingleMultiple';
 
 type ComponentType = {
-  onDelete: () => void
+  onDelete: () => void,
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  defaultValue?: string
 }
 
 const AdminAddFieldFile: React.FC<ComponentType> = ({
-  onDelete
+  onDelete,
+  onChange,
+  defaultValue
 }) => {
-  const [name, setName] = useState('field')
-
   const [expanded, setExpanded] = useState<boolean>(false)
 
   const handleChange = () => {
@@ -36,13 +39,18 @@ const AdminAddFieldFile: React.FC<ComponentType> = ({
 
   return (
     <div className='rounded bg-gray-200 w-full group'>
-      <div className="flex w-full relative">
+      <div className="flex w-full relative items-center text-sm">
         <div className="flex-grow min-w-0 m-1.5 p-1 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
           <span className="flex-none icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="7.499" cy="9.5" r="1.5"></circle><path d="m10.499 14-1.5-2-3 4h12l-4.5-6z"></path><path d="M19.999 4h-16c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm-16 14V6h16l.002 12H3.999z"></path></svg>
           </span>
-          <input ref={inputRef} type="text" className="flex-grow min-w-0" value={name} onChange={(e) => setName(e.target.value)} />
+          <input ref={inputRef} type="text" className="flex-grow min-w-0" required defaultValue={defaultValue || 'field'} onChange={(e) => onChange(e)} />
         </div>
+
+        <div className="flex-none border-l">
+          <SelectSingleMultiple />
+        </div>
+
         <div className="flex-none p-2 border-l">
           <span className="icon w-8 h-8 p-1 cursor-pointer hover:bg-gray-300 rounded-full"
             onClick={handleChange}
