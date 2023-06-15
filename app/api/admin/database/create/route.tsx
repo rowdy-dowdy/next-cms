@@ -1,14 +1,18 @@
-import { DATA_FIELDS } from '@/components/admin/ModalAddCollection';
+import { DATA_FIELDS } from '@/lib/admin/fields';
 import db from '@/lib/server/prismadb';
 import { NextResponse } from 'next/server';
+import { v4 } from 'uuid';
 
 const checkField = (
+  name: string | null,
   fields: {
     id: string;
     field: string; 
     name: string
   }[]
 ) => {
+  if (name == null) return false
+
   let arr: string[] = []
 
   for(const field of fields) {
@@ -25,7 +29,7 @@ const checkField = (
 
 export async function POST(request: Request) {
   try {
-    const { name, fields }: 
+    var { name, fields }: 
     {
       name: string, 
       fields: {
@@ -35,18 +39,33 @@ export async function POST(request: Request) {
       }[]
     } = await request.json()
 
-    if (!checkField(fields)) {
+    if (!checkField(name, fields)) {
       return NextResponse.json({ message: 'Error' }, {status: 400});
     }
 
     let sql = `create table ${name} (${fields.reduce((pre,cur,i) => {
       if (i > 0) pre+= ','
+      else {
+        pre += `id integer primary key autoincrement, createdAt datetime NOT NULL DEFAULT current_timestamp, updatedAt datetime NOT NULL DEFAULT current_timestamp,`
+      }
 
       let datatype = DATA_FIELDS.find(v => v.fieldName == cur.field)?.datatype
       pre += `${cur.name} ${datatype}`
 
       return pre
     },'')})`
+
+    let sqlUpdateAt = `
+      CREATE TRIGGER tg_${name}_updated_at
+      AFTER UPDATE
+      ON ${name} FOR EACH ROW
+      BEGIN
+        UPDATE ${name} SET updatedAt = current_timestamp
+          WHERE id = old.id;
+      END
+    `
+
+    console.log({sql, sqlUpdateAt})
 
     const [dataType, _] = await db.$transaction([
       db.dataType.create({
@@ -64,7 +83,8 @@ export async function POST(request: Request) {
           dataRows: true
         }
       }),
-      db.$executeRawUnsafe(sql)
+      db.$executeRawUnsafe(sql),
+      db.$executeRawUnsafe(sqlUpdateAt)
     ])
 
     return NextResponse.json({ data: dataType });

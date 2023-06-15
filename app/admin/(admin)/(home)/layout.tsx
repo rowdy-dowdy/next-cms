@@ -1,14 +1,10 @@
 import HomeSideBar from "@/components/admin/HomeSideBar";
+import NestedLayoutHomeAdmin from "@/components/admin/NestedLayoutHomeAdmin";
+import db from "@/lib/server/prismadb";
+import { redirect } from "next/navigation";
 
-async function getData() {
-  const res = await fetch(process.env.NEXTAUTH_URL + '/api/admin/database/data-types')
-  if (!res.ok) {
-    null
-  }
-
-  console.log('asdf')
-
-  return await res.json();
+export async function getDataTypes() {
+  return await db.dataType.findMany()
 }
 
 export default async function HomeLayout({
@@ -17,18 +13,18 @@ export default async function HomeLayout({
   children: React.ReactNode;
 }) {
 
-  const data = await getData()
-
-  console.log({data})
+  const dataTypes = await getDataTypes()
 
   return (
-    <div className="w-full h-full flex">
-      <div className="flex-none">
-        <HomeSideBar />
+    <NestedLayoutHomeAdmin data={dataTypes}>
+      <div className="w-full h-full flex">
+        <div className="flex-none">
+          <HomeSideBar data={dataTypes} />
+        </div>
+        <div className="flex-grow min-w-0">
+          {children}
+        </div>
       </div>
-      <div className="flex-grow min-w-0">
-        {children}
-      </div>
-    </div>
+    </NestedLayoutHomeAdmin>
   );
 }

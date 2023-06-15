@@ -4,9 +4,9 @@ import React from 'react'
 
 const IOSSwitch = styled((props: SwitchProps) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
-  width: 42,
-  height: 26,
+))(({ theme, size }) => ({
+  width: size == "medium" ? 42 : 36,
+  height: size == "medium" ? 26 : 20,
   padding: 0,
   '& .MuiSwitch-switchBase': {
     padding: 0,
@@ -40,8 +40,8 @@ const IOSSwitch = styled((props: SwitchProps) => (
   },
   '& .MuiSwitch-thumb': {
     boxSizing: 'border-box',
-    width: 22,
-    height: 22,
+    width: size == "medium" ? 22 : 16,
+    height: size == "medium" ? 22 : 16,
   },
   '& .MuiSwitch-track': {
     borderRadius: 26 / 2,
@@ -75,7 +75,7 @@ const FormIOSSwitch: React.FC<ComponentType> = ({
       onChange={onChange}
       control={<IOSSwitch sx={{ m: 1 }} defaultChecked size={size} />}
       label={label}
-      style={{userSelect: 'none', transform: size == "small" ? `scale(0.8)` : ''}}
+      style={{userSelect: 'none'}}
     />
   )
 }

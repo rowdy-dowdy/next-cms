@@ -10,12 +10,18 @@ import IconRefresh from '@/components/icons/IconRefresh';
 import { grey } from '@mui/material/colors';
 import IconSearch from '@/components/icons/IconSearch';
 import FormIOSSwitch from '@/components/FormIOSSwitch';
+import type { DataType, DataRow } from "prisma/prisma-client";
+import { revalidateTag } from 'next/cache';
+import { v4 } from 'uuid';
 
 type ComponentType = {
-  data: any[]
+  data: any[],
+  dataType: DataType & {
+    dataRows: DataRow[]
+  }
 }
 
-const AdminHomeContent: React.FC<ComponentType> = ({data}) => {
+const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openFileds = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,17 +31,24 @@ const AdminHomeContent: React.FC<ComponentType> = ({data}) => {
     setAnchorEl(null)
   }
 
-  const columns = [
-    { id: 'id', label: 'ID', width: "0px"},
-    { id: 'title', label: 'Tên'},
-    { id: 'age', label: 'Tuổi'},
-    { id: 'gender', label: 'Giới tính'},
-  ];
+  const columns = [{
+    id: v4(),
+    name: 'id',
+    width: 'auto'
+  }, ...dataType.dataRows.map(v => ({id: v.id, name: v.name, width: 'auto'})).concat({
+    id: v4(),
+    name: 'createdAt',
+    width: '1px'
+  }, {
+    id: v4(),
+    name: 'updatedAt',
+    width: '1px'
+  })];
 
   // const data = new Array(30).fill(0).map((v,i) => ({ id: i, name: "Viet Hung", age: 25, gender: "Nam"}))
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -51,16 +64,21 @@ const AdminHomeContent: React.FC<ComponentType> = ({data}) => {
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
+  const test = () => {
+    revalidateTag('admin')
+  }
 
   return (
     <div className='p-6'>
+      <button onClick={test}>click</button>
       <section className="flex items-center space-x-4">
         <div className="text-xl">
           <span className='text-gray-500'>Collections</span> <span className='px-3 select-none'>/</span>
-          <span>messages</span>
+          <span>{dataType.name}</span>
         </div>
         <span className="icon p-2 w-10 h-10 rounded-full hover:bg-gray-200 cursor-pointer">
           <IconCog />
@@ -100,14 +118,14 @@ const AdminHomeContent: React.FC<ComponentType> = ({data}) => {
               <TableHead>
                 <TableRow>
                   <TableCell style={{width: '0px'}} align="left"><input type="checkbox" /></TableCell>
-                  {columns.map((column) => (
+                  {columns.map((v) => (
                     <TableCell
-                      key={column.id}
-                      align="center"
+                      key={v.id}
+                      align="left"
                       // width={column?.width || 'auto'}
-                      style={{width: column?.width || 'auto'}}
+                      style={{width: v.width}}
                     >
-                      {column.label}
+                      {v.name}
                     </TableCell>
                   ))}
                   <TableCell align="right" style={{width: '0px', whiteSpace: 'nowrap'}}>
@@ -132,9 +150,9 @@ const AdminHomeContent: React.FC<ComponentType> = ({data}) => {
                       <div className="px-4">
                         <p className='text-sm'>Toggle columns</p>
                         <div className="flex flex-col">
-                          {columns.map((v,i) =>
+                          {columns.filter(v => v.name != 'id').map((v,i) =>
                             <div key={i} className="flex items-center">
-                              <FormIOSSwitch label={v.label} />
+                              <FormIOSSwitch label={v.name} size='small' />
                             </div>
                           )}
                         </div>
