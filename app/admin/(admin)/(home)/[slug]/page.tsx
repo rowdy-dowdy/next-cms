@@ -3,8 +3,12 @@ import db from '@/lib/server/prismadb'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
+// export const fetchCache = 'force-no-store'
+export const revalidate = 1
+
 const getData = async (name: string) => {
   try {
+    console.log('fetch data')
     const [dataType, data] = await db.$transaction([
       db.dataType.findFirst({
         where: {
@@ -16,7 +20,7 @@ const getData = async (name: string) => {
       }),
       db.$queryRawUnsafe<any[]>(`select * from ${name}`)
     ])
-  
+
     return {dataType, data}
   } 
   catch (error) {
@@ -31,8 +35,6 @@ type PageType = {
 
 const page = async ({ params }: PageType) => {
   const { dataType, data } = await getData(params.slug)
-
-  console.log({ dataType, data })
 
   if (dataType == null) {
     // redirect('/admin')

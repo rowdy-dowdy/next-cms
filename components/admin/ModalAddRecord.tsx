@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { revalidateTag } from 'next/cache'
 import { DataRow, DataType } from 'prisma/prisma-client'
 import { useRouter } from 'next/navigation'
+import { FieldNameType } from '@/lib/admin/fields'
  
 const AdminFormFieldText = dynamic(() => import('./form-field/AdminFormFieldText'), {
   loading: () => <p>Loading...</p>,
@@ -48,6 +49,11 @@ type ComponentType = {
   }
 }
 
+type DataFieldType = (Omit<DataRow, 'field'> & {
+  value: any
+  field: FieldNameType
+})[]
+
 const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
   const router = useRouter()
 
@@ -67,11 +73,12 @@ const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
     onClose()
   }
 
-  const oldData: (DataRow & {value: any})[] = dataType.dataRows.map(v => ({
+  const oldData: DataFieldType = dataType.dataRows.map(v => ({
     ...v,
+    field: v.field as FieldNameType,
     value: null
   }))
-  const [data, setData] = useState<(DataRow & {value: any})[]>(oldData)
+  const [data, setData] = useState<DataFieldType>(oldData)
 
   const onChangeField = (value: any, id: string) => {
     setData(state => state.map(v => {
@@ -99,18 +106,19 @@ const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
           name: dataType.name,
           fields: data
         }),
+        cache: 'no-store'
       })
 
-      if (!res.ok) throw "Error"
+      if (!res.ok) throw await res.text()
 
       const body = await res.json()
 
+      router.refresh()
       console.log({body})
       onClose()
-      router.refresh()
       
     } catch (error) {
-      
+      console.log({error})
     } finally {
       setLoading(false)
     }
@@ -132,18 +140,18 @@ const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
             {data.map(v => {
               switch(v.field) {
                 case 'Plain text':
-                  return <AdminFormFieldText key={v.id} id={v.id} name={v.name} onChange={(v) => onChangeField(v, v.id)} />
+                  return <AdminFormFieldText key={v.id} id={v.id} name={v.name} onChange={(value) => onChangeField(value, v.id)} />
                 case 'Rich text':
-                  return <AdminFormFieldRichText key={v.id} id={v.id} name={v.name} />
+                  return <AdminFormFieldRichText key={v.id} id={v.id} name={v.name} onChange={(value) => onChangeField(value, v.id)} />
                 case 'Number':
                   return <AdminFormFieldNumber key={v.id} id={v.id} name={v.name} />
                 case 'Bool':
-                  return <AdminFormFieldBool key={v.id} id={v.id} name={v.name} />
+                  return <AdminFormFieldBool key={v.id} id={v.id} name={v.name} onChange={(value) => onChangeField(value, v.id)} />
                 case 'Email':
                   return <AdminFormFieldEmail key={v.id} id={v.id} name={v.name} />
                 case 'Url':
                   return <AdminFormFieldUrl key={v.id} id={v.id} name={v.name} />
-                case 'Datetime':
+                case 'DateTime':
                   return <AdminFormFieldDateTime key={v.id} id={v.id} name={v.name} />
                 case 'Select':
                   return <AdminFormFieldSelect key={v.id} id={v.id} name={v.name} />

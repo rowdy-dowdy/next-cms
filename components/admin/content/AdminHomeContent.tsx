@@ -11,9 +11,10 @@ import { grey } from '@mui/material/colors';
 import IconSearch from '@/components/icons/IconSearch';
 import FormIOSSwitch from '@/components/FormIOSSwitch';
 import type { DataType, DataRow } from "prisma/prisma-client";
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { v4 } from 'uuid';
 import ModalAddRecord from '../ModalAddRecord';
+import { useRouter } from 'next/navigation';
 
 type ComponentType = {
   data: any[],
@@ -69,14 +70,17 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
     setPage(0)
   }
 
+  const router = useRouter()
   const test = () => {
-    revalidateTag('admin')
+    // revalidateTag('admin')
+    
+    router.refresh()
   }
 
   const [isOpenAddRecord, setIsOpenAddRecord] = useState(false)
 
   return (
-    <div className='p-6'>
+    <div className='w-full h-full p-6 overflow-y-auto'>
       <button onClick={test}>click</button>
       <section className="flex items-center space-x-4">
         <div className="text-xl">
@@ -197,7 +201,7 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
                     </TableCell>
                   </TableRow>
                 ))}
-                { emptyRows == 0 
+                { data.length == 0 
                   ? <TableRow>
                     <TableCell colSpan={"100%" as any} className='text-center'>
                       <div className="flex flex-col items-center space-y-4">

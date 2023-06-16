@@ -17,7 +17,7 @@ const AdminFormFieldEmail: React.FC<State> = ({
   className = '',
   placeholder
 }) => {
-  const icon = DATA_FIELDS.find(v => v.fieldName == 'Plain text')?.icon
+  const icon = DATA_FIELDS.find(v => v.fieldName == 'Email')?.icon
 
   return (
     <label htmlFor={id} className={`rounded px-3 py-2 bg-gray-200 focus-within:bg-gray-300 select-none ${className}`}>

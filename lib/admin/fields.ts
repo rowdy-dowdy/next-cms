@@ -1,5 +1,7 @@
-type DataFieldType = {
-  fieldName: "Plain text" | "Rich text" | "Number" | "Bool" | "Email" | "Url" | "DateTime" | "Select" | "File" | "Relation" | "JSON",
+export type FieldNameType = "Plain text" | "Rich text" | "Number" | "Bool" | "Email" | "Url" | "DateTime" | "Select" | "File" | "Relation" | "JSON"
+
+export type DataFieldType = {
+  fieldName: FieldNameType,
   icon: string,
   datatype: string
 }

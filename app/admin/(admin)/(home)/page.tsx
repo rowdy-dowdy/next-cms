@@ -9,7 +9,7 @@ export default async function Page() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-6">
       Không có bảng cơ sở dữ liệu nào, hãy tạo bảng mới
     </div>
   );

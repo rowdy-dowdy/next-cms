@@ -9,7 +9,9 @@ type State = {
   name: string
   required?: boolean,
   className?: string,
-  placeholder?: string
+  placeholder?: string,
+  value?: any,
+  onChange?: (data: any) => void,
 }
 
 const AdminFormFieldRichText: React.FC<State> = ({
@@ -17,16 +19,22 @@ const AdminFormFieldRichText: React.FC<State> = ({
   name,
   required = false,
   className = '',
-  placeholder
+  placeholder,
+  value,
+  onChange
 }) => {
   const icon = DATA_FIELDS.find(v => v.fieldName == 'Plain text')?.icon
 
   const editorRef = useRef<TinyMCEEditor | null>(null)
   
-  const [editorContent, setEditorContent] = useState('');
+  // const [editorContent, setEditorContent] = useState(value);
 
   const handleEditorChange = (content: string, editor: TinyMCEEditor) => {
-    setEditorContent(content)
+    // setEditorContent(content)
+
+    if (onChange) {
+      onChange(content)
+    }
   }
 
   return (
@@ -35,7 +43,7 @@ const AdminFormFieldRichText: React.FC<State> = ({
         <span className="icon w-4 h-4" dangerouslySetInnerHTML={{__html: icon || ''}}></span>
         {name}
       </p>
-      <textarea name={name} value={editorContent} readOnly className='sr-only' />
+      {/* <textarea name={name} value={editorContent} readOnly className='sr-only' /> */}
       <style>{`
         .tox-tinymce { border-radius: 5px }
         .tox-statusbar__branding {

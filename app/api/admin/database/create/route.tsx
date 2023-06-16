@@ -65,8 +65,6 @@ export async function POST(request: Request) {
       END
     `
 
-    console.log({sql, sqlUpdateAt})
-
     const [dataType, _] = await db.$transaction([
       db.dataType.create({
         data: {
