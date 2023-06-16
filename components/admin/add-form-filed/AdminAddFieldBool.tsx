@@ -1,6 +1,7 @@
 "use client"
 import FormIOSSwitch from '@/components/FormIOSSwitch';
 import IconCog from '@/components/icons/IconCog'
+import { DATA_FIELDS } from '@/lib/admin/fields';
 import { Button, Collapse } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -36,13 +37,13 @@ const AdminAddFieldBool: React.FC<ComponentType> = ({
     inputRef.current?.select()
   },[])
 
+  const icon = DATA_FIELDS.find(v => v.fieldName == 'Bool')?.icon
+
   return (
     <div className='rounded bg-gray-200 w-full group'>
       <div className="flex w-full relative text-sm">
         <div className="flex-grow min-w-0 m-1.5 p-1 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
-          <span className="flex-none icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16 9c-1.628 0-3 1.372-3 3s1.372 3 3 3 3-1.372 3-3-1.372-3-3-3z"></path><path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8c3.309 0 6-2.691 6-6s-2.691-6-6-6zm0 10H8a4.006 4.006 0 0 1-4-3.99C4.004 9.799 5.798 8 8 8h8c2.206 0 4 1.794 4 4s-1.794 4-4 4z"></path></svg>
-          </span>
+          <span className="flex-none icon" dangerouslySetInnerHTML={{__html: icon || ''}}></span>
           <input ref={inputRef} type="text" className="flex-grow min-w-0" required defaultValue={defaultValue || 'field'} onChange={(e) => onChange(e)} />
         </div>
         <div className="flex-none p-2 border-l">

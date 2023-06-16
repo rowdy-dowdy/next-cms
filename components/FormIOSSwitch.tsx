@@ -58,28 +58,33 @@ const IOSSwitch = styled((props: SwitchProps) => (
 
 type ComponentType = {
   checked?: boolean,
-  onChange?: () => void,
+  onChange?: (event: any) => void
   size?: "small" | "medium",
-  label?: string
+  label?: string,
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>
+  name?: string
 }
 
 const FormIOSSwitch: React.FC<ComponentType> = ({
   checked,
   onChange,
   size = "medium",
-  label
+  label,
+  inputProps,
+  name
 }) => {
   return (
     <FormControlLabel
-      checked={checked}
-      onChange={onChange}
-      control={<IOSSwitch sx={{ m: 1 }} defaultChecked size={size} />}
+      name={name}
+      control={<IOSSwitch 
+        checked={checked} onChange={onChange} 
+        inputProps={inputProps} sx={{ m: 1 }} 
+        defaultChecked={checked == undefined ? true : undefined} size={size} 
+      />}
       label={label}
       style={{userSelect: 'none'}}
     />
   )
 }
-
-IOSSwitch
 
 export default FormIOSSwitch

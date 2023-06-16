@@ -7,6 +7,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import React, { useEffect, useRef, useState } from 'react'
 import SelectSingleMultiple from './SelectSingleMultiple';
+import { DATA_FIELDS } from '@/lib/admin/fields';
 
 type ComponentType = {
   onDelete: () => void,
@@ -37,13 +38,13 @@ const AdminAddFieldSelect: React.FC<ComponentType> = ({
     inputRef.current?.select()
   },[])
 
+  const icon = DATA_FIELDS.find(v => v.fieldName == 'Select')?.icon
+
   return (
     <div className='rounded bg-gray-200 w-full group'>
       <div className="flex w-full relative items-center text-sm">
         <div className="flex-grow min-w-0 m-1.5 p-1.5 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
-          <span className="flex-none icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm16-8V6H8.023v2H18.8zM8 11h12v2H8zm0 5h12v2H8z"></path></svg>
-          </span>
+          <span className="flex-none icon" dangerouslySetInnerHTML={{__html: icon || ''}}></span>
           <input ref={inputRef} type="text" className="flex-grow min-w-0" required defaultValue={defaultValue || 'field'} onChange={(e) => onChange(e)} />
         </div>
 

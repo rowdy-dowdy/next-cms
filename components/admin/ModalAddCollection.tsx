@@ -2,21 +2,48 @@
 import { Backdrop, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, Menu, MenuItem, TextField } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import React, { FormEvent, useEffect, useState } from 'react'
-import AdminFormFieldText from './form-field/AdminFormFieldText'
-import AdminAddFieldText from './add-form-filed/AdminAddFieldText'
+import dynamic from 'next/dynamic'
 import { v4 } from 'uuid'
-import AdminAddFieldRichText from './add-form-filed/AdminAddFieldRichText'
-import AdminAddFieldNumber from './add-form-filed/AdminAddFieldNumber'
-import AdminAddFieldBool from './add-form-filed/AdminAddFieldBool'
-import AdminAddFieldEmail from './add-form-filed/AdminAddFieldEmail'
-import AdminAddFieldUrl from './add-form-filed/AdminAddFieldUrl'
-import AdminAddFieldDateTime from './add-form-filed/AdminAddFieldDateTime'
-import AdminAddFieldSelect from './add-form-filed/AdminAddFieldSelect'
-import AdminAddFieldFile from './add-form-filed/AdminAddFieldFile'
-import AdminAddFieldRelation from './add-form-filed/AdminAddFieldRelation'
-import AdminAddFieldJson from './add-form-filed/AdminAddFieldJson'
 import { DATA_FIELDS } from '@/lib/admin/fields'
 import { revalidateTag } from 'next/cache'
+import { useRouter } from 'next/navigation'
+
+const AdminFormFieldText = dynamic(() => import('./form-field/AdminFormFieldText'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldText = dynamic(() => import('./add-form-filed/AdminAddFieldText'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldRichText = dynamic(() => import('./add-form-filed/AdminAddFieldRichText'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldNumber = dynamic(() => import('./add-form-filed/AdminAddFieldNumber'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldBool = dynamic(() => import('./add-form-filed/AdminAddFieldBool'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldEmail = dynamic(() => import('./add-form-filed/AdminAddFieldEmail'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldUrl = dynamic(() => import('./add-form-filed/AdminAddFieldUrl'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldDateTime = dynamic(() => import('./add-form-filed/AdminAddFieldDateTime'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldSelect = dynamic(() => import('./add-form-filed/AdminAddFieldSelect'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldFile = dynamic(() => import('./add-form-filed/AdminAddFieldFile'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldRelation = dynamic(() => import('./add-form-filed/AdminAddFieldRelation'), {
+  loading: () => <p>Loading...</p>,
+})
+const AdminAddFieldJson = dynamic(() => import('./add-form-filed/AdminAddFieldJson'), {
+  loading: () => <p>Loading...</p>,
+})
 
 type ComponentType = {
   open: boolean,
@@ -24,6 +51,8 @@ type ComponentType = {
 }
 
 const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
+  const router = useRouter()
+  
   const onCloseModal = () => {
     if (data.length > 0) {
       setHasCloseModal(true)
@@ -114,7 +143,7 @@ const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
       console.log({body})
       onClose()
       setData([])
-      revalidateTag('admin')
+      router.refresh()
       
     } catch (error) {
       
@@ -133,7 +162,7 @@ const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
         <form className='w-[700px] max-w-[100vw] flex flex-col h-full' onSubmit={submit}>
           <div className="flex-none bg-gray-100 py-6 px-8">
             <h3 className='text-xl'>New Collection</h3>
-            <AdminFormFieldText title='name' name='name' required placeholder='eg. "posts' className='mt-6' />
+            <AdminFormFieldText id="name" name='name' required placeholder='eg. "posts' className='mt-6' />
           </div>
           <div className="flex-grow min-h-0 overflow-y-auto py-6 px-8 flex flex-col space-y-4">
             <div className='text-sm'>System fields: <Chip label="id" size='small'/>,
@@ -154,7 +183,7 @@ const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
                   return <AdminAddFieldEmail key={v.id} onChange={(e) => onChangeField(e, v.id)} onDelete={() => onDeleteField(v.id)} />
                 case 'Url':
                   return <AdminAddFieldUrl key={v.id} onChange={(e) => onChangeField(e, v.id)} onDelete={() => onDeleteField(v.id)} />
-                case 'Datetime':
+                case 'DateTime':
                   return <AdminAddFieldDateTime key={v.id} onChange={(e) => onChangeField(e, v.id)} onDelete={() => onDeleteField(v.id)} />
                 case 'Select':
                   return <AdminAddFieldSelect key={v.id} onChange={(e) => onChangeField(e, v.id)} onDelete={() => onDeleteField(v.id)} />

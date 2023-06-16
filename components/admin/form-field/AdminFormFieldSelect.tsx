@@ -1,56 +1,35 @@
 "use client"
-import { FormControl, FormHelperText, MenuItem, Select, SelectChangeEvent } from '@mui/material'
-import React, { useState } from 'react'
+import { DATA_FIELDS } from '@/lib/admin/fields'
+import React, { useRef } from 'react'
 
 type State = {
-  label?: boolean,
-  title: string,
+  id: string,
   name: string
   required?: boolean,
-  list: Item[]
-}
-
-type Item = {
-  value: string,
-  title: string
+  className?: string,
+  placeholder?: string
 }
 
 const AdminFormFieldSelect: React.FC<State> = ({
-  label,
-  title,
+  id,
   name,
   required = false,
-  list
+  className = '',
+  placeholder
 }) => {
-
-  const [value, setValue] = useState("")
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value);
-  };
+  const icon = DATA_FIELDS.find(v => v.fieldName == 'Plain text')?.icon
 
   return (
-    // <div>AdminFormFieldSelect</div>
-    <div>
-      <p className="text-sm font-semibold mb-1">{title} { required && <span className="text-red-500">*</span> }</p>
-      <FormControl className='w-full'>
-        <Select
-          value={value}
-          onChange={handleChange}
-          displayEmpty
-          size='small'
-          name={name}
-          required={required}
-        >
-          { !required && <MenuItem value="">
-            <em>Không chọn</em>
-          </MenuItem> }
-          { list.map((v,i) =>
-            <MenuItem key={i} value={v.value}>{v.title}</MenuItem> 
-          )}
-        </Select>
-      </FormControl>
-    </div>
+    <label htmlFor={id} className={`rounded px-3 py-2 bg-gray-200 focus-within:bg-gray-300 select-none ${className}`}>
+      <p className="text-sm font-semibold mb-1 flex items-center space-x-2">
+        <span className="icon w-4 h-4" dangerouslySetInnerHTML={{__html: icon || ''}}></span>
+        {name}
+      </p>
+      <input type="text" name={name} id={id}
+        className="w-full border-none !bg-transparent" 
+        required={required} placeholder={placeholder}
+      />
+    </label>
   )
 }
 

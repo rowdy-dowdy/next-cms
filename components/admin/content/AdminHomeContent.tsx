@@ -13,6 +13,7 @@ import FormIOSSwitch from '@/components/FormIOSSwitch';
 import type { DataType, DataRow } from "prisma/prisma-client";
 import { revalidateTag } from 'next/cache';
 import { v4 } from 'uuid';
+import ModalAddRecord from '../ModalAddRecord';
 
 type ComponentType = {
   data: any[],
@@ -72,6 +73,8 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
     revalidateTag('admin')
   }
 
+  const [isOpenAddRecord, setIsOpenAddRecord] = useState(false)
+
   return (
     <div className='p-6'>
       <button onClick={test}>click</button>
@@ -99,7 +102,7 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
           <span className="icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>
           </span>
-        )} onClick={() => {}}>
+        )} onClick={() => setIsOpenAddRecord(true)}>
           New Records
         </Button>
       </section>
@@ -203,7 +206,7 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
                           <span className="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>
                           </span>
-                        )} onClick={() => {}}>
+                        )} onClick={() => setIsOpenAddRecord(true)}>
                           New Records
                         </Button>
                       </div>
@@ -224,6 +227,8 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
           />
         </Paper>
       </section>
+
+      <ModalAddRecord dataType={dataType} open={isOpenAddRecord} onClose={() => setIsOpenAddRecord(false)} />
     </div>
   )
 }

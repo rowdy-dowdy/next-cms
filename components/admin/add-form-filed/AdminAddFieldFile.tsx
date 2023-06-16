@@ -7,6 +7,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import React, { useEffect, useRef, useState } from 'react'
 import SelectSingleMultiple from './SelectSingleMultiple';
+import { DATA_FIELDS } from '@/lib/admin/fields';
 
 type ComponentType = {
   onDelete: () => void,
@@ -37,13 +38,13 @@ const AdminAddFieldFile: React.FC<ComponentType> = ({
     inputRef.current?.select()
   },[])
 
+  const icon = DATA_FIELDS.find(v => v.fieldName == 'File')?.icon
+
   return (
     <div className='rounded bg-gray-200 w-full group'>
       <div className="flex w-full relative items-center text-sm">
         <div className="flex-grow min-w-0 m-1.5 p-1 flex items-center space-x-2 focus-within:bg-gray-300 rounded">
-          <span className="flex-none icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="7.499" cy="9.5" r="1.5"></circle><path d="m10.499 14-1.5-2-3 4h12l-4.5-6z"></path><path d="M19.999 4h-16c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm-16 14V6h16l.002 12H3.999z"></path></svg>
-          </span>
+          <span className="flex-none icon" dangerouslySetInnerHTML={{__html: icon || ''}}></span>
           <input ref={inputRef} type="text" className="flex-grow min-w-0" required defaultValue={defaultValue || 'field'} onChange={(e) => onChange(e)} />
         </div>
 
