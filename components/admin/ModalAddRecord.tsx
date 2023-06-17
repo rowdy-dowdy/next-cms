@@ -7,46 +7,25 @@ import { DataRow, DataType } from 'prisma/prisma-client'
 import { useRouter } from 'next/navigation'
 import { FieldNameType } from '@/lib/admin/fields'
  
-const AdminFormFieldText = dynamic(() => import('./form-field/AdminFormFieldText'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldRichText = dynamic(() => import('./form-field/AdminFormFieldRichText'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldNumber = dynamic(() => import('./form-field/AdminFormFieldNumber'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldBool = dynamic(() => import('./form-field/AdminFormFieldBool'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldDateTime = dynamic(() => import('./form-field/AdminFormFieldDateTime'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldSelect = dynamic(() => import('./form-field/AdminFormFieldSelect'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldFile = dynamic(() => import('./form-field/AdminFormFieldFile'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldRelation = dynamic(() => import('./form-field/AdminFormFieldRelation'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldJson = dynamic(() => import('./form-field/AdminFormFieldJson'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldEmail = dynamic(() => import('./form-field/AdminFormFieldEmail'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminFormFieldUrl = dynamic(() => import('./form-field/AdminFormFieldUrl'), {
-  loading: () => <p>Loading...</p>,
-})
+import AdminFormFieldText from './form-field/AdminFormFieldText'
+import AdminFormFieldRichText from './form-field/AdminFormFieldRichText'
+import AdminFormFieldNumber from './form-field/AdminFormFieldNumber'
+import AdminFormFieldBool from './form-field/AdminFormFieldBool'
+import AdminFormFieldDateTime from './form-field/AdminFormFieldDateTime'
+import AdminFormFieldSelect from './form-field/AdminFormFieldSelect'
+import AdminFormFieldFile from './form-field/AdminFormFieldFile'
+import AdminFormFieldRelation from './form-field/AdminFormFieldRelation'
+import AdminFormFieldJson from './form-field/AdminFormFieldJson'
+import AdminFormFieldEmail from './form-field/AdminFormFieldEmail'
+import AdminFormFieldUrl from './form-field/AdminFormFieldUrl'
 
 type ComponentType = {
   open: boolean,
   onClose: () => void,
   dataType: DataType & {
     dataRows: DataRow[]
-  }
+  },
+  editValue?: any
 }
 
 type DataFieldType = (Omit<DataRow, 'field'> & {
@@ -54,7 +33,7 @@ type DataFieldType = (Omit<DataRow, 'field'> & {
   field: FieldNameType
 })[]
 
-const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
+const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType, editValue}) => {
   const router = useRouter()
 
   const onCloseModal = () => {
@@ -73,12 +52,23 @@ const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
     onClose()
   }
 
-  const oldData: DataFieldType = dataType.dataRows.map(v => ({
-    ...v,
-    field: v.field as FieldNameType,
-    value: null
-  }))
-  const [data, setData] = useState<DataFieldType>(oldData)
+  // data
+
+  const setDefaultData = () => dataType.dataRows.map(v => {
+    let tempValue: any = ''
+    if ((v.field as FieldNameType) == "Bool") {
+      tempValue = true
+    }
+
+    return {
+      ...v,
+      field: v.field as FieldNameType,
+      value: tempValue
+    }
+  })
+
+  const [oldData, setOldData] = useState(setDefaultData())
+  const [data, setData] = useState<DataFieldType>(setDefaultData())
 
   const onChangeField = (value: any, id: string) => {
     setData(state => state.map(v => {
@@ -89,6 +79,27 @@ const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
       return v
     }))
   }
+
+  useEffect(() => {
+    let tempData = setDefaultData()
+    if (editValue) {
+      tempData = oldData.map(v => {
+        let tempValue = editValue[v.name]
+
+        if (v.field == "Bool") {
+          tempValue = true
+        }
+
+        return {
+          ...v,
+          value: tempValue
+        }
+      })
+    }
+
+    setOldData(tempData)
+    setData(tempData)
+  }, [editValue])
 
   // create record
   const [loading, setLoading] = useState(false)
@@ -104,6 +115,7 @@ const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
         method: 'POST',
         body: JSON.stringify({
           name: dataType.name,
+          editId: editValue?.id,
           fields: data
         }),
         cache: 'no-store'
@@ -114,7 +126,6 @@ const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
       const body = await res.json()
 
       router.refresh()
-      console.log({body})
       onClose()
       
     } catch (error) {
@@ -140,13 +151,16 @@ const ModalAddRecord: React.FC<ComponentType> = ({open, onClose, dataType}) => {
             {data.map(v => {
               switch(v.field) {
                 case 'Plain text':
-                  return <AdminFormFieldText key={v.id} id={v.id} name={v.name} onChange={(value) => onChangeField(value, v.id)} />
+                  return <AdminFormFieldText key={v.id} id={v.id} name={v.name} 
+                    value={v.value} onChange={(value) => onChangeField(value, v.id)} />
                 case 'Rich text':
-                  return <AdminFormFieldRichText key={v.id} id={v.id} name={v.name} onChange={(value) => onChangeField(value, v.id)} />
+                  return <AdminFormFieldRichText key={v.id} id={v.id} name={v.name} 
+                    defaultValue={v.value} onChange={(value) => onChangeField(value, v.id)} />
                 case 'Number':
                   return <AdminFormFieldNumber key={v.id} id={v.id} name={v.name} />
                 case 'Bool':
-                  return <AdminFormFieldBool key={v.id} id={v.id} name={v.name} onChange={(value) => onChangeField(value, v.id)} />
+                  return <AdminFormFieldBool key={v.id} id={v.id} name={v.name} 
+                    defaultValue={v.value} onChange={(value) => onChangeField(value, v.id)} />
                 case 'Email':
                   return <AdminFormFieldEmail key={v.id} id={v.id} name={v.name} />
                 case 'Url':

@@ -1,4 +1,4 @@
-export type FieldNameType = "Plain text" | "Rich text" | "Number" | "Bool" | "Email" | "Url" | "DateTime" | "Select" | "File" | "Relation" | "JSON"
+export type FieldNameType = "ID" | "Plain text" | "Rich text" | "Number" | "Bool" | "Email" | "Url" | "DateTime" | "Select" | "File" | "Relation" | "JSON"
 
 export type DataFieldType = {
   fieldName: FieldNameType,
@@ -7,6 +7,11 @@ export type DataFieldType = {
 }
 
 export const DATA_FIELDS: DataFieldType[] = [
+  {
+    fieldName: "ID",
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7 17a5.007 5.007 0 0 0 4.898-4H14v2h2v-2h2v3h2v-3h1v-2h-9.102A5.007 5.007 0 0 0 7 7c-2.757 0-5 2.243-5 5s2.243 5 5 5zm0-8c1.654 0 3 1.346 3 3s-1.346 3-3 3-3-1.346-3-3 1.346-3 3-3z"></path></svg>',
+    datatype: 'integer'
+  },
   {
     fieldName: "Plain text",
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 8h2V6h3.252L7.68 18H5v2h8v-2h-2.252L13.32 6H17v2h2V4H5z"></path></svg>',

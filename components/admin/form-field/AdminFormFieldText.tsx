@@ -8,6 +8,7 @@ type State = {
   required?: boolean,
   className?: string,
   placeholder?: string,
+  defaultValue?: any,
   value?: any,
   onChange?: (data: any) => void,
 }
@@ -18,6 +19,7 @@ const AdminFormFieldText: React.FC<State> = ({
   required = false,
   className = '',
   placeholder,
+  defaultValue,
   value,
   onChange
 }) => {
@@ -35,8 +37,8 @@ const AdminFormFieldText: React.FC<State> = ({
         <span className="icon w-4 h-4" dangerouslySetInnerHTML={{__html: icon || ''}}></span>
         {name}
       </p>
-      <input type="text" name={name} id={id}
-        className="w-full border-none !bg-transparent" 
+      <input type="text" name={name} id={id} defaultValue={defaultValue}
+        className="w-full border-none !bg-transparent" value={value}
         required={required} placeholder={placeholder} onChange={onChangeValue}
       />
     </label>

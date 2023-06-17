@@ -15,12 +15,25 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 import { v4 } from 'uuid';
 import ModalAddRecord from '../ModalAddRecord';
 import { useRouter } from 'next/navigation';
+import AdminViewFieldText from '../view-form-field/AdminViewFieldText';
+import { DATA_FIELDS, FieldNameType } from '@/lib/admin/fields';
+import AdminViewFieldRichText from '../view-form-field/AdminViewFieldRichText';
+import AdminViewFieldBool from '../view-form-field/AdminViewFieldBool';
+import AdminViewFieldDateTime from '../view-form-field/AdminViewFieldDateTime';
+import AdminViewFieldId from '../view-form-field/AdminViewFieldId';
 
 type ComponentType = {
   data: any[],
   dataType: DataType & {
     dataRows: DataRow[]
   }
+}
+
+type ColumnType = {
+  id: string,
+  name: string,
+  width: 'auto' | string,
+  field: FieldNameType
 }
 
 const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
@@ -33,24 +46,27 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
     setAnchorEl(null)
   }
 
-  const columns = [{
+  const columns: ColumnType[] = [{
     id: v4(),
     name: 'id',
-    width: 'auto'
-  }, ...dataType.dataRows.map(v => ({id: v.id, name: v.name, width: 'auto'})).concat({
+    width: '1px',
+    field: 'ID'
+  }, ...dataType.dataRows.map(v => ({id: v.id, name: v.name, field: v.field as FieldNameType, width: 'auto'})).concat({
     id: v4(),
     name: 'createdAt',
-    width: '1px'
+    width: '1px',
+    field: 'DateTime'
   }, {
     id: v4(),
     name: 'updatedAt',
-    width: '1px'
+    width: '1px',
+    field: 'DateTime'
   })];
 
   // const data = new Array(30).fill(0).map((v,i) => ({ id: i, name: "Viet Hung", age: 25, gender: "Nam"}))
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -70,19 +86,22 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
     setPage(0)
   }
 
-  const router = useRouter()
-  const test = () => {
-    // revalidateTag('admin')
-    
-    router.refresh()
+  // add record
+  const [isOpenAddRecord, setIsOpenAddRecord] = useState(false)
+  const [recordEdit, setRecordEdit] = useState<any>(null)
+
+  // view record
+  const openRecord = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, row: any) => {
+    // check input event
+    if ((e.target as HTMLElement).tagName === 'INPUT') return
+
+    setRecordEdit(row)
+    setIsOpenAddRecord(true)
   }
 
-  const [isOpenAddRecord, setIsOpenAddRecord] = useState(false)
-
   return (
-    <div className='w-full h-full p-6 overflow-y-auto'>
-      <button onClick={test}>click</button>
-      <section className="flex items-center space-x-4">
+    <div className='w-full h-full p-6 overflow-y-auto flex flex-col'>
+      <section className="flex-none flex items-center space-x-4">
         <div className="text-xl">
           <span className='text-gray-500'>Collections</span> <span className='px-3 select-none'>/</span>
           <span>{dataType.name}</span>
@@ -111,16 +130,16 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
         </Button>
       </section>
 
-      <section className='mt-8 flex items-center space-x-4'>
+      <section className='flex-none mt-8 flex items-center space-x-4'>
         <div className="w-full rounded-full bg-gray-200 px-4 py-3 flex items-center space-x-3">
           <span className="flex-none icon"><IconSearch /></span>
           <input type="text" className='flex-grow min-w-0' placeholder='Search ...' />
         </div>
       </section>
 
-      <section className='mt-8'>
-        <Paper sx={{ width: '100%' }} className='rounded overflow-hidden'>
-          <TableContainer sx={{ maxHeight: 440 }}>
+      <section className='flex-grow min-h-0 mt-8'>
+        <Paper sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} className='rounded overflow-hidden'>
+          <TableContainer sx={{ flexGrow: 1 }}>
             <Table stickyHeader aria-label="custom pagination table">
               <TableHead>
                 <TableRow>
@@ -132,7 +151,10 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
                       // width={column?.width || 'auto'}
                       style={{width: v.width}}
                     >
-                      {v.name}
+                      <div className="flex items-center space-x-1">
+                        <span className="icon w-4 h-4" dangerouslySetInnerHTML={{__html: DATA_FIELDS.find(v2 => v2.fieldName == v.field)?.icon || ''}}></span>
+                        <span>{v.name}</span>
+                      </div>
                     </TableCell>
                   ))}
                   <TableCell align="right" style={{width: '0px', whiteSpace: 'nowrap'}}>
@@ -173,33 +195,32 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
                   ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   : data
                 ).map((row) => (
-                  <TableRow key={row.id}>
+                  <StyledTableRow key={row.id} onClick={(e) => openRecord(e, row)}>
                     <TableCell align="left"><input type="checkbox" /></TableCell>
-                    <TableCell align="center">{row.id}</TableCell>
-                    <TableCell align="center">{row.title}</TableCell>
-                    <TableCell align="center">{row.image}</TableCell>
-                    <TableCell align="center">{row.type}</TableCell>
+                    {columns.map((v) => (
+                      <TableCell key={`${row.id}-${v.id}`} align="left">{
+                        {
+                          'ID': <AdminViewFieldId value={row[v.name]} />,
+                          'Plain text': <AdminViewFieldText value={row[v.name]} />,
+                          'Rich text': <AdminViewFieldRichText value={row[v.name]} />,
+                          'Number': <AdminViewFieldText value={row[v.name]} />,
+                          'Bool': <AdminViewFieldBool value={row[v.name]} />,
+                          'Email': <AdminViewFieldText value={row[v.name]} />,
+                          'Url': <AdminViewFieldText value={row[v.name]} />,
+                          'DateTime': <AdminViewFieldDateTime value={row[v.name]} />,
+                          'Select': <AdminViewFieldText value={row[v.name]} />,
+                          'File': <AdminViewFieldText value={row[v.name]} />,
+                          'Relation': <AdminViewFieldText value={row[v.name]} />,
+                          'JSON': <AdminViewFieldText value={row[v.name]} />
+                        }[v.field] || null
+                      }</TableCell>
+                    ))}
                     <TableCell align="right">
-                      <div className="flex space-x-1 items-center">
-                        
-                        <Button color='warning' variant='contained' size='small' startIcon={(
-                          <span className="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 9a3.02 3.02 0 0 0-3 3c0 1.642 1.358 3 3 3 1.641 0 3-1.358 3-3 0-1.641-1.359-3-3-3z"></path><path d="M12 5c-7.633 0-9.927 6.617-9.948 6.684L1.946 12l.105.316C2.073 12.383 4.367 19 12 19s9.927-6.617 9.948-6.684l.106-.316-.105-.316C21.927 11.617 19.633 5 12 5zm0 12c-5.351 0-7.424-3.846-7.926-5C4.578 10.842 6.652 7 12 7c5.351 0 7.424 3.846 7.926 5-.504 1.158-2.578 5-7.926 5z"></path></svg>
-                          </span>
-                        )}>Xem</Button>
-                        <Button color='primary' variant='contained' size='small' startIcon={(
-                          <span className="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m18.988 2.012 3 3L19.701 7.3l-3-3zM8 16h3l7.287-7.287-3-3L8 13z"></path><path d="M19 19H8.158c-.026 0-.053.01-.079.01-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .896-2 2v14c0 1.104.897 2 2 2h14a2 2 0 0 0 2-2v-8.668l-2 2V19z"></path></svg>
-                          </span>
-                        )}>Sửa</Button>
-                        <Button color='error' variant='contained' size='small' startIcon={(
-                          <span className="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path><path d="M9 10h2v8H9zm4 0h2v8h-2z"></path></svg>
-                          </span>
-                        )}>Xóa</Button>
-                      </div>
+                      <span className="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z"></path></svg>
+                      </span>
                     </TableCell>
-                  </TableRow>
+                  </StyledTableRow>
                 ))}
                 { data.length == 0 
                   ? <TableRow>
@@ -221,7 +242,8 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+            sx={{ flex: 'none', borderTop: '1px solid #e0e0e0' }}
+            rowsPerPageOptions={[20, 50, 100, { label: 'All', value: -1 }]}
             component="div"
             count={data.length}
             rowsPerPage={rowsPerPage}
@@ -232,7 +254,7 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
         </Paper>
       </section>
 
-      <ModalAddRecord dataType={dataType} open={isOpenAddRecord} onClose={() => setIsOpenAddRecord(false)} />
+      <ModalAddRecord dataType={dataType} editValue={recordEdit} open={isOpenAddRecord} onClose={() => setIsOpenAddRecord(false)} />
     </div>
   )
 }
@@ -247,14 +269,13 @@ const AdminHomeContent: React.FC<ComponentType> = ({data, dataType}) => {
 //   },
 // }));
 
-// const StyledTableRow = styled(TableRow)(({ theme }) => ({
-//   '&:nth-of-type(odd)': {
-//     backgroundColor: "#0000000a",
-//   },
-//   // hide last border
-//   '&:last-child td, &:last-child th': {
-//     border: 0,
-//   },
-// }));
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&': {
+    cursor: 'pointer'
+  },
+  '&:hover': {
+    backgroundColor: "#0000000a",
+  },
+}));
 
 export default AdminHomeContent

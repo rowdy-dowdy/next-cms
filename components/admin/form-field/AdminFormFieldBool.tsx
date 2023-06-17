@@ -9,6 +9,7 @@ type State = {
   required?: boolean,
   className?: string,
   placeholder?: string,
+  defaultValue?: any,
   value?: any,
   onChange?: (data: any) => void,
 }
@@ -19,16 +20,12 @@ const AdminFormFieldBool: React.FC<State> = ({
   required = false,
   className = '',
   placeholder,
+  defaultValue,
   value,
   onChange
 }) => {
-  // const icon = DATA_FIELDS.find(v => v.fieldName == 'Plain text')?.icon
-
-  const [checked, setChecked] = React.useState(value ? value : true)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(e.target.checked)
-
     if (onChange) {
       onChange(e.target.checked)
     }
@@ -37,7 +34,7 @@ const AdminFormFieldBool: React.FC<State> = ({
   return (
     <div>
       {/* <FormIOSSwitch name={name} label={name} /> */}
-      <FormIOSSwitch checked={checked} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }} label={name} />
+      <FormIOSSwitch checked={value} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }} label={name} />
     </div>
   )
 }

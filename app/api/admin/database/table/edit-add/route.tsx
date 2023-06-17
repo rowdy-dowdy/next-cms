@@ -15,33 +15,42 @@ export async function POST(request: NextRequest) {
     const user = await useCurrentUserAdmin(request)
     if (!user) return NextResponse.json("Unauthorized", {status: 401})
 
-    const { name, fields } : { name: string, fields: FieldType } = await request.json()
+    const { editId, name, fields } : { editId?: string, name: string, fields: FieldType } = await request.json()
 
     if (!name) {
       return NextResponse.json("Error", { status: 400 })
     }
-    
-    // const dataType = await db.dataType.findFirst({
-    //   where: {
-    //     name: name
-    //   },
-    //   include: {
-    //     dataRows: true
-    //   }
-    // })
 
-    let sql = `insert into ${name} (${fields.map(v => v.name).join(',')}) values(${fields.reduce((pre,cur,i) => {
-      if (i > 0) pre+= ','
+    let sql = ''
 
-      if (cur.field == "Bool") {
-        pre += `${cur.value != "on"}`
-      }
-      else {
-        pre += `'${cur.value}'`
-      }
-
-      return pre
-    },'')})`
+    if (editId) {
+      sql = `update ${name} set ${fields.reduce((pre,cur,i) => {
+        if (i > 0) pre+= ','
+  
+        if (cur.field == "Bool") {
+          pre += `${cur.name} = ${cur.value ? 1 : 0}`
+        }
+        else {
+          pre += `${cur.name} = '${cur.value}'`
+        }
+  
+        return pre
+      },'')} where id = ${editId}`
+    }
+    else {
+      sql = `insert into ${name} (${fields.map(v => v.name).join(',')}) values(${fields.reduce((pre,cur,i) => {
+        if (i > 0) pre+= ','
+  
+        if (cur.field == "Bool") {
+          pre += `${cur.value ? 1 : 0}`
+        }
+        else {
+          pre += `'${cur.value}'`
+        }
+  
+        return pre
+      },'')})`
+    }
 
     console.log({sql})
 

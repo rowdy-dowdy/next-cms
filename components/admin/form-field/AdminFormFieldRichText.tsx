@@ -10,7 +10,7 @@ type State = {
   required?: boolean,
   className?: string,
   placeholder?: string,
-  value?: any,
+  defaultValue?: any,
   onChange?: (data: any) => void,
 }
 
@@ -20,7 +20,7 @@ const AdminFormFieldRichText: React.FC<State> = ({
   required = false,
   className = '',
   placeholder,
-  value,
+  defaultValue,
   onChange
 }) => {
   const icon = DATA_FIELDS.find(v => v.fieldName == 'Plain text')?.icon
@@ -66,7 +66,7 @@ const AdminFormFieldRichText: React.FC<State> = ({
         onInit={(evt, editor) => {editorRef.current = editor}}
         tinymceScriptSrc={'/tinymce/tinymce.min.js'}
         onEditorChange={handleEditorChange}
-        initialValue=""
+        initialValue={defaultValue}
         init={{
           height: 300,
           min_height: 300,

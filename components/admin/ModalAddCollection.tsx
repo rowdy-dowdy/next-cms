@@ -8,42 +8,18 @@ import { DATA_FIELDS } from '@/lib/admin/fields'
 import { revalidateTag } from 'next/cache'
 import { useRouter } from 'next/navigation'
 
-const AdminFormFieldText = dynamic(() => import('./form-field/AdminFormFieldText'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldText = dynamic(() => import('./add-form-filed/AdminAddFieldText'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldRichText = dynamic(() => import('./add-form-filed/AdminAddFieldRichText'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldNumber = dynamic(() => import('./add-form-filed/AdminAddFieldNumber'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldBool = dynamic(() => import('./add-form-filed/AdminAddFieldBool'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldEmail = dynamic(() => import('./add-form-filed/AdminAddFieldEmail'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldUrl = dynamic(() => import('./add-form-filed/AdminAddFieldUrl'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldDateTime = dynamic(() => import('./add-form-filed/AdminAddFieldDateTime'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldSelect = dynamic(() => import('./add-form-filed/AdminAddFieldSelect'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldFile = dynamic(() => import('./add-form-filed/AdminAddFieldFile'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldRelation = dynamic(() => import('./add-form-filed/AdminAddFieldRelation'), {
-  loading: () => <p>Loading...</p>,
-})
-const AdminAddFieldJson = dynamic(() => import('./add-form-filed/AdminAddFieldJson'), {
-  loading: () => <p>Loading...</p>,
-})
+import AdminFormFieldText from'./form-field/AdminFormFieldText'
+import AdminAddFieldText from'./add-form-filed/AdminAddFieldText'
+import AdminAddFieldRichText from'./add-form-filed/AdminAddFieldRichText'
+import AdminAddFieldNumber from'./add-form-filed/AdminAddFieldNumber'
+import AdminAddFieldBool from'./add-form-filed/AdminAddFieldBool'
+import AdminAddFieldEmail from'./add-form-filed/AdminAddFieldEmail'
+import AdminAddFieldUrl from'./add-form-filed/AdminAddFieldUrl'
+import AdminAddFieldDateTime from'./add-form-filed/AdminAddFieldDateTime'
+import AdminAddFieldSelect from'./add-form-filed/AdminAddFieldSelect'
+import AdminAddFieldFile from'./add-form-filed/AdminAddFieldFile'
+import AdminAddFieldRelation from'./add-form-filed/AdminAddFieldRelation'
+import AdminAddFieldJson from'./add-form-filed/AdminAddFieldJson'
 
 type ComponentType = {
   open: boolean,
@@ -140,10 +116,9 @@ const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
 
       const body = await res.json()
 
-      console.log({body})
+      router.refresh()
       onClose()
       setData([])
-      router.refresh()
       
     } catch (error) {
       
