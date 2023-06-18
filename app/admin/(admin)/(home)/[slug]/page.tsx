@@ -4,11 +4,10 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 
 // export const fetchCache = 'force-no-store'
-export const revalidate = 1
+export const revalidate = 0
 
 const getData = async (name: string) => {
   try {
-    console.log('fetch data')
     const [dataType, data] = await db.$transaction([
       db.dataType.findFirst({
         where: {

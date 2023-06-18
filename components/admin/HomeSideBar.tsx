@@ -5,6 +5,8 @@ import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 import type { DataType } from "prisma/prisma-client";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 const HomeSideBar: React.FC<{
   data: DataType[]
@@ -16,6 +18,11 @@ const HomeSideBar: React.FC<{
   }
 
   const [dataFilter, setDataFilter] = useState<DataType[]>(data)
+
+  const router = useRouter()
+  const refresh = () => {
+    router.refresh()
+  }
 
   return (
     <div className='w-60 h-full bg-white border-r'>
@@ -44,6 +51,8 @@ const HomeSideBar: React.FC<{
             No collections found.
           </div> : null
         }
+
+        <button onClick={refresh}>refresh</button>
 
         <Button className='!mt-4' variant="outlined" style={{borderWidth: 2, borderColor: grey[900]}} startIcon={(
           <span className="icon">

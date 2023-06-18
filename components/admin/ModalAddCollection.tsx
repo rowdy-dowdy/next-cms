@@ -197,7 +197,7 @@ const ModalAddCollection: React.FC<ComponentType> = ({open, onClose}) => {
               }}
             >
               <div className="w-full grid grid-cols-4 px-2 text-sm">
-                {DATA_FIELDS.map((v,i) =>
+                {DATA_FIELDS.filter(v => v.fieldName != "ID").map((v,i) =>
                   <div key={i} className="px-2 py-2 rounded flex items-center space-x-2 hover:bg-gray-200 cursor-pointer"
                     onClick={() => addField(v.fieldName)}
                   >

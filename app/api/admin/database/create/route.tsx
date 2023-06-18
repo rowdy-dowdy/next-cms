@@ -1,5 +1,6 @@
 import { DATA_FIELDS } from '@/lib/admin/fields';
 import db from '@/lib/server/prismadb';
+import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { v4 } from 'uuid';
 
@@ -84,6 +85,8 @@ export async function POST(request: Request) {
       db.$executeRawUnsafe(sql),
       db.$executeRawUnsafe(sqlUpdateAt)
     ])
+
+    revalidatePath('/admin')
 
     return NextResponse.json({ data: dataType });
   }

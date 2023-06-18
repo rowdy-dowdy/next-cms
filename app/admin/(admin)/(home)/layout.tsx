@@ -1,7 +1,9 @@
 import HomeSideBar from "@/components/admin/HomeSideBar";
 import db from "@/lib/server/prismadb";
 
-export async function getDataTypes() {
+export const revalidate = 0
+
+export const getDataTypes = async ()  => {
   return await db.dataType.findMany()
 }
 

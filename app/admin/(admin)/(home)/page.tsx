@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { getDataTypes } from "./layout";
 
+export const revalidate = 0
+
 export default async function Page() {
   const dataTypes = await getDataTypes()
 
